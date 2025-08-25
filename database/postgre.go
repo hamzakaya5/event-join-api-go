@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gamegos_case/models"
+	"os"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -22,12 +23,12 @@ var DBConn *DB
 func ConnectToPostgre() error {
 
 	cfg := models.PostgreConfig{
-		Host:     "postgres", // Use service name defined in docker-compose
-		Port:     5432,
-		User:     "myuser",
-		Password: "mypassword",
-		Database: "mydb",
+		Host:     os.Getenv("DB_HOST"),
+		User:     os.Getenv("DB_USER"),     //"myuser",
+		Password: os.Getenv("DB_PASSWORD"), //"mypassword",
+		Database: os.Getenv("DB_NAME"),     //"mydb",
 		MaxConns: 10,
+		Port:     5432,
 	}
 
 	dsn := fmt.Sprintf(

@@ -28,6 +28,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var storedHash string
 	var lvl int
 	var user_id int
+
 	err := database.DBConn.Pool.QueryRow(ctx,
 		"SELECT email, password_hash, level, id FROM players WHERE email=$1",
 		email,
@@ -146,7 +147,7 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 
 	// fmt.Println(usr, evnt)
 
-	var isEnrolled interface{}
+	var isEnrolled int
 	// var lvl int
 
 	ctx := r.Context()
@@ -158,10 +159,11 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Rollback(ctx)
 
-	err = tx.QueryRow(ctx,
-		"SELECT event_number FROM players WHERE id=$1",
-		usr,
-	).Scan(&isEnrolled)
+	// err = tx.QueryRow(ctx,
+	// 	"SELECT event_number FROM players WHERE id=$1",
+	// 	usr,
+	// ).Scan(&isEnrolled)
+	isEnrolled, err = GetPlayersEvent(tx, ctx, usr)
 
 	if err != nil {
 		if err == pgx.ErrNoRows {
@@ -176,18 +178,18 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 
 	// fmt.Println("pgrow", lvl)
 	// fmt.Println(isEnrolled, "isenrolled")
-	if isEnrolled != nil {
+	if isEnrolled != 0 {
 		http.Error(w, "User is enrolled in any event", http.StatusAlreadyReported)
 		return
 	}
 
 	// Check if event exists
 	var isExist int
-
-	err = tx.QueryRow(ctx,
-		"SELECT id FROM events WHERE id=$1",
-		evnt,
-	).Scan(&isExist)
+	isExist, err = IsEventExist(tx, ctx, evnt)
+	// err = tx.QueryRow(ctx,
+	// 	"SELECT id FROM events WHERE id=$1",
+	// 	evnt,
+	// ).Scan(&isExist)
 
 	if err != nil {
 		if err == pgx.ErrNoRows {
@@ -204,10 +206,11 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = tx.QueryRow(ctx,
-		"SELECT id FROM event_history WHERE player_id=$1 and event_id=$2",
-		usr, evnt,
-	).Scan(&prevEventId)
+	// err = tx.QueryRow(ctx,
+	// 	"SELECT id FROM event_history WHERE player_id=$1 and event_id=$2",
+	// 	usr, evnt,
+	// ).Scan(&prevEventId)
+	prevEventId, err = GetEventHistoryID(tx, ctx, usr, evnt)
 
 	if err != nil && err != pgx.ErrNoRows {
 		fmt.Println("Error querying event_history:", err)
@@ -220,10 +223,11 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = tx.QueryRow(ctx,
-		"SELECT gr.id, ctg.id FROM group_name gr JOIN categories ctg ON ctg.id = gr.category_id WHERE  ctg.min_level <=  $1 and $1 <= ctg.max_level and gr.group_count < 10",
-		lvl,
-	).Scan(&groupId, &categoryId)
+	// err = tx.QueryRow(ctx,
+	// 	"SELECT gr.id, ctg.id FROM group_name gr JOIN categories ctg ON ctg.id = gr.category_id WHERE  ctg.min_level <=  $1 and $1 <= ctg.max_level and gr.group_count < 10",
+	// 	lvl,
+	// ).Scan(&groupId, &categoryId)
+	groupId, categoryId, err = GetCategoryForLevel(tx, ctx, lvl)
 
 	if err != nil && err != pgx.ErrNoRows {
 		fmt.Println("Error selecting group:", err)
@@ -235,25 +239,26 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 	if groupId == 0 {
 		fmt.Println("no existing group found, creating new group")
 		// var newCategoryId int
-		err := tx.QueryRow(ctx,
-			"SELECT id FROM categories WHERE $1 BETWEEN min_level and max_level",
-			lvl,
-		).Scan(&categoryId)
 
+		// err := tx.QueryRow(ctx,
+		// 	"SELECT id FROM categories WHERE $1 BETWEEN min_level and max_level",
+		// 	lvl,
+		// ).Scan(&categoryId)
+		categoryId, err = GetCategoryForPlayerLevel(tx, ctx, lvl)
 		if err != nil {
 			fmt.Println("Error selecting category:", err)
 			http.Error(w, `{"error":"db error"}`, http.StatusInternalServerError)
 			return
 		}
 
-		err = tx.QueryRow(ctx,
-			`INSERT INTO group_name (category_id, event_id, group_count)
-			VALUES ($1, $2, $3	)
-			RETURNING id`,
-			categoryId, eventNo, 1,
-		).Scan(&groupId)
-
-		fmt.Print(groupId, "after added newgroupid")
+		// err = tx.QueryRow(ctx,
+		// 	`INSERT INTO group_name (category_id, event_id, group_count)
+		// 	VALUES ($1, $2, $3	)
+		// 	RETURNING id`,
+		// 	categoryId, eventNo, 1,
+		// ).Scan(&groupId)
+		groupId, err = InsertGroup(tx, ctx, categoryId, evnt)
+		// fmt.Print(groupId, "after added newgroupid")
 
 		if err != nil {
 			http.Error(w, "Error creating new group", http.StatusInternalServerError)
@@ -264,11 +269,12 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 		//increment group count
 		fmt.Println(groupId, "existinggroupid")
 
-		_, err := tx.Exec(ctx,
-			`UPDATE group_name
-			SET group_count = group_count + 1
-			WHERE id = $1`, groupId,
-		)
+		// _, err := tx.Exec(ctx,
+		// 	`UPDATE group_name
+		// 	SET group_count = group_count + 1
+		// 	WHERE id = $1`, groupId,
+		// )
+		err = IncreaseGroupCount(tx, ctx, groupId)
 		if err != nil {
 			http.Error(w, `{"error":"could not update group count"}`, http.StatusInternalServerError)
 			return
@@ -277,22 +283,23 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(groupId, "finalgroupid", eventNo, userId, categoryId)
 
-	_, err = tx.Exec(ctx,
-		`UPDATE players
-		SET "group" = $1, event_number = $2
-		WHERE id = $3`, groupId, evnt, usr,
-	)
+	// _, err = tx.Exec(ctx,
+	// 	`UPDATE players
+	// 	SET "group" = $1, event_number = $2
+	// 	WHERE id = $3`, groupId, evnt, usr,
+	// )
+	err = UpdatePlayer(tx, ctx, groupId, evnt, usr)
 	if err != nil {
 		// fmt.Fprintf(w, "Error updating player: %v", err)
 		http.Error(w, `{"error":"could not update group count"}`, http.StatusInternalServerError)
 		return
 	}
 
-	_, err = tx.Exec(ctx,
-		`INSERT INTO event_history (player_id, event_id )
-			VALUES ($1, $2)`, usr, evnt,
-	)
-
+	// _, err = tx.Exec(ctx,
+	// 	`INSERT INTO event_history (player_id, event_id )
+	// 		VALUES ($1, $2)`, usr, evnt,
+	// )
+	err = UpdatePlayerEventHistory(tx, ctx, evnt, usr)
 	if err != nil {
 		fmt.Println("Error inserting event_history:", err)
 		http.Error(w, `{"error":"could not insert event history"}`, http.StatusInternalServerError)
