@@ -1,0 +1,4 @@
+id,name,min_level,max_level
+1,Bronze,1,20
+2,Silver,21,49
+3,Gold,50,150
