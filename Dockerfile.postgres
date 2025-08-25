@@ -1,0 +1,5 @@
+# Dockerfile.postgres
+FROM postgres:17.6
+
+# Copy SQL dump into container init directory
+COPY ./database_backup_files/mydb.sql /docker-entrypoint-initdb.d/init.sql

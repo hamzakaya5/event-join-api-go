@@ -49,14 +49,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintln(w, "User logged in!")
 	err = database.RedisClient.Set(ctx, token, email, 24*time.Hour).Err()
 
 	if err != nil {
 		fmt.Fprintln(w, "Error storing token in Redis", err)
 		return
 	}
-	fmt.Fprintln(w, "Token:", token)
 
 	resp := models.LoginResponse{
 		Status:  200,
@@ -98,7 +96,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	//produced a random number for representing level
 	db_resp, _ := database.DBConn.Pool.Exec(ctx, "INSERT INTO players (username, email, password_hash, level) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING", username, email, hash, num)
-	fmt.Print(db_resp.RowsAffected())
+	// fmt.Print(db_resp.RowsAffected())
 	//save to db the password after hashing
 	if db_resp.RowsAffected() == 0 {
 		resp := models.RegisterResponse{
@@ -112,7 +110,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 
 	}
-	fmt.Fprintln(w, "User registered!", ctx, email, password)
+	// fmt.Fprintln(w, "User registered!", ctx, email, password)
 
 	resp := models.RegisterResponse{
 		Status:  200,
@@ -175,8 +173,8 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("pgrow", lvl)
-	fmt.Println(isEnrolled, "isenrolled")
+	// fmt.Println("pgrow", lvl)
+	// fmt.Println(isEnrolled, "isenrolled")
 	if isEnrolled != nil {
 		fmt.Fprintln(w, "User is enrolled in any event")
 		return
@@ -200,7 +198,6 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(isExist, "isexist")
 	if isExist == 0 {
 		fmt.Fprintln(w, "No such event exists")
 		return
@@ -222,10 +219,6 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(prevEventId, " preveventid")
-
-	// database.RedisClient.Get
-	// db_resp, _ := database.DBConn.Pool.Exec(ctx, "INSERT INTO players (username, email, password_hash, level) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING", username, email, hash, num)
 	err = tx.QueryRow(ctx,
 		"SELECT gr.id, ctg.id FROM group_name gr JOIN categories ctg ON ctg.id = gr.category_id WHERE  ctg.min_level <=  $1 and $1 <= ctg.max_level and gr.group_count < 10",
 		lvl,
@@ -236,7 +229,6 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"error":"db error"}`, http.StatusInternalServerError)
 		return
 	}
-
 	fmt.Println(groupId, " groupid here", categoryId, lvl)
 
 	if groupId == 0 {
@@ -252,10 +244,6 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, `{"error":"db error"}`, http.StatusInternalServerError)
 			return
 		}
-
-		// fmt.Println(categoryId, "categoryid after select")
-
-		fmt.Println(categoryId, "categoryid", eventNo, "hella")
 
 		err = tx.QueryRow(ctx,
 			`INSERT INTO group_name (category_id, event_id, group_count)

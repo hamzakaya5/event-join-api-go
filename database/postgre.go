@@ -22,7 +22,7 @@ var DBConn *DB
 func ConnectToPostgre() error {
 
 	cfg := models.PostgreConfig{
-		Host:     "localhost",
+		Host:     "postgres", // Use service name defined in docker-compose
 		Port:     5432,
 		User:     "myuser",
 		Password: "mypassword",

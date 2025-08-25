@@ -1,0 +1,50 @@
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile.backend
+    networks:
+      - backend_net
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_NAME: mydb
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    networks:
+      - backend_net
+
+  redis:
+    image: redis:7.4
+    networks:
+      - backend_net
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8080:8080"
+    networks:
+      - backend_net
+    depends_on:
+    - backend
+
+networks:
+  backend_net:
+
+volumes:
+  postgres_data:

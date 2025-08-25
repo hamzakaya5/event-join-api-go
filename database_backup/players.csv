@@ -1,5 +1,0 @@
-id,event_number,email,password_hash,username,level,group
-1,4,oyee.HK@gmail.com,$2a$14$R5bWQu.Kc3QV7aGAPrF8bOg0pazD5UWeQtX5seFhcnTaD8e8I3uHu,hamza,61,19
-9,4,oye.HK@gmail.com,$2a$14$z5g/.8IN9.r15RJDrseBbeO2kzZnKizWyyA1DfxiFyfa7fHOeifh2,hamz,42,20
-10,4,aaa,$2a$14$YCK8EU8bfN9RtL2JIZKhIuNCvS8CAvJZaLkThg3sdnhYA0MyRMEoW,ccc,68,19
-11,,aaaa,$2a$14$QAJ4soTwUU7n1iqapr47reazOe0zugWgIiNdToZf5RFq/ECNM5RoS,cccc,58,
