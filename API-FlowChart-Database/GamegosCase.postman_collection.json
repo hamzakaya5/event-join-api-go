@@ -1,0 +1,403 @@
+{
+	"info": {
+		"_postman_id": "04eb77f3-6ebb-48c1-ad52-ffee53ccaa78",
+		"name": "GamegosCase",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29001341"
+	},
+	"item": [
+		{
+			"name": "user_api",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "email",
+								"value": "aaaaa",
+								"type": "text"
+							},
+							{
+								"key": "password",
+								"value": "bbbbb",
+								"type": "text"
+							},
+							{
+								"key": "username",
+								"value": "ccccc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "register",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "email",
+										"value": "aaaaa",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "bbbbb",
+										"type": "text"
+									},
+									{
+										"key": "username",
+										"value": "ccccc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 25 Aug 2025 13:50:25 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "67"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"cccccregistered successfully\",\n    \"level\": 62\n}"
+						}
+					]
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "email",
+								"value": "oyee.HK@gmail.com",
+								"type": "text"
+							},
+							{
+								"key": "password",
+								"value": "mypass123",
+								"type": "text"
+							},
+							{
+								"key": "username",
+								"value": "hamza",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "login",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "email",
+										"value": "aaaaa",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "bbbbb",
+										"type": "text"
+									},
+									{
+										"key": "username",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 25 Aug 2025 13:50:37 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "216"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"aaaaalogged in successfully\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYyMTYyMzcsInVzZXJuYW1lIjoiYWFhYWEifQ.7tfRkQSaluYmtle4XbOJJjElxm1Tlxi5Gs1-W3fOcI8\",\n    \"id\": 12,\n    \"level\": 62\n}"
+						}
+					]
+				},
+				{
+					"name": "Join Event",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYyMTYyMzcsInVzZXJuYW1lIjoiYWFhYWEifQ.7tfRkQSaluYmtle4XbOJJjElxm1Tlxi5Gs1-W3fOcI8",
+								"type": "text"
+							},
+							{
+								"key": "eventNo",
+								"value": "4",
+								"type": "text"
+							},
+							{
+								"key": "userId",
+								"value": "12",
+								"type": "text"
+							},
+							{
+								"key": "level",
+								"value": "62",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/join",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"join"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Join Event",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "email",
+										"value": "oyee.HK@gmail.com",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "password",
+										"value": "mypass123",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "username",
+										"value": "hamza",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYyMTYyMzcsInVzZXJuYW1lIjoiYWFhYWEifQ.7tfRkQSaluYmtle4XbOJJjElxm1Tlxi5Gs1-W3fOcI8",
+										"type": "text"
+									},
+									{
+										"key": "eventNo",
+										"value": "4",
+										"type": "text"
+									},
+									{
+										"key": "userId",
+										"value": "12",
+										"type": "text"
+									},
+									{
+										"key": "level",
+										"value": "62",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/join",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"join"
+									]
+								}
+							},
+							"status": "Already Reported",
+							"code": 208,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain; charset=utf-8"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 25 Aug 2025 14:03:53 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "30"
+								}
+							],
+							"cookie": [],
+							"body": "User is enrolled in any event\n"
+						},
+						{
+							"name": "Join Event",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "email",
+										"value": "oyee.HK@gmail.com",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "password",
+										"value": "mypass123",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "username",
+										"value": "hamza",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYyMTYyMzcsInVzZXJuYW1lIjoiYWFhYWEifQ.7tfRkQSaluYmtle4XbOJJjElxm1Tlxi5Gs1-W3fOcI8",
+										"type": "text"
+									},
+									{
+										"key": "eventNo",
+										"value": "3",
+										"type": "text"
+									},
+									{
+										"key": "userId",
+										"value": "11",
+										"type": "text"
+									},
+									{
+										"key": "level",
+										"value": "62",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/join",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"join"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.28.0"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 25 Aug 2025 14:40:16 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "14"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								}
+							],
+							"cookie": [],
+							"body": "invalid token\n"
+						}
+					]
+				}
+			]
+		}
+	]
+}

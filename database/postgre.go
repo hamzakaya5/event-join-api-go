@@ -17,9 +17,6 @@ type DB struct {
 
 var DBConn *DB
 
-// Config holds database configuration
-
-// Connect creates a new database connection pool
 func ConnectToPostgre() error {
 
 	cfg := models.PostgreConfig{

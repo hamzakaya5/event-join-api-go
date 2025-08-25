@@ -99,7 +99,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	//produced a random number for representing level
 	db_resp, _ := database.DBConn.Pool.Exec(ctx, "INSERT INTO players (username, email, password_hash, level) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING", username, email, hash, num)
 	// fmt.Print(db_resp.RowsAffected())
-	//save to db the password after hashing
+
 	if db_resp.RowsAffected() == 0 {
 		resp := models.RegisterResponse{
 			Status:  200,
@@ -120,7 +120,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		Level:   num,
 	}
 
-	// Set response header and send JSON
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(resp)
 

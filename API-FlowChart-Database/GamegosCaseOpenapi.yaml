@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  title: GamegosCase
+  description: 
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: "https://postman-echo.com"
+paths:
+  /register:
+    get:
+      tags:
+        - user_api
+      summary: register
+      description: 
+      operationId: getregister
+      parameters:
+        - name: email
+          in: header
+          schema:
+            type: string
+          example: aaaaa
+        - name: password
+          in: header
+          schema:
+            type: string
+          example: bbbbb
+        - name: username
+          in: header
+          schema:
+            type: string
+          example: ccccc
+      responses:
+        200:
+          description: register
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  message: cccccregistered successfully
+                  level: 62
+  /login:
+    get:
+      tags:
+        - user_api
+      summary: login
+      description: 
+      operationId: getlogin
+      parameters:
+        - name: email
+          in: header
+          schema:
+            type: string
+          example: oyee.HK@gmail.com
+        - name: password
+          in: header
+          schema:
+            type: string
+          example: mypass123
+        - name: username
+          in: header
+          schema:
+            type: string
+          example: hamza
+      responses:
+        200:
+          description: login
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  message: aaaaalogged in successfully
+                  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYyMTYyMzcsInVzZXJuYW1lIjoiYWFhYWEifQ.7tfRkQSaluYmtle4XbOJJjElxm1Tlxi5Gs1-W3fOcI8
+                  id: 12
+                  level: 62
+  /join:
+    get:
+      tags:
+        - user_api
+      summary: Join Event
+      description: 
+      operationId: getjoin
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYyMTYyMzcsInVzZXJuYW1lIjoiYWFhYWEifQ.7tfRkQSaluYmtle4XbOJJjElxm1Tlxi5Gs1-W3fOcI8
+        - name: eventNo
+          in: header
+          schema:
+            type: string
+          example: 4
+        - name: userId
+          in: header
+          schema:
+            type: string
+          example: 12
+        - name: level
+          in: header
+          schema:
+            type: string
+          example: 62
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+        208:
+          description: Join Event
+          content:
+            text/plain; charset=utf-8:
+              schema:
+                type: string
+                example: |
+                  User is enrolled in any event
+                  
+        401:
+          description: Join Event
+          content:
+            text/plain; charset=utf-8:
+              schema:
+                type: string
+                example: |
+                  invalid token
+                  
+components:
+  schemas: {}
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    digestAuth:
+      type: http
+      scheme: digest
+tags:
+  - name: user_api
+    description: 

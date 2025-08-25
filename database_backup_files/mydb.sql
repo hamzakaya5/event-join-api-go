@@ -4,7 +4,7 @@
 -- https://tableplus.com/
 --
 -- Database: mydb
--- Generation Time: 2025-08-25 13:46:16.0980
+-- Generation Time: 2025-08-25 19:40:18.2950
 -- -------------------------------------------------------------
 
 
@@ -72,29 +72,13 @@ CREATE TABLE "public"."players" (
 INSERT INTO "public"."events" ("id") VALUES
 (4);
 
-INSERT INTO "public"."event_history" ("id", "player_id", "event_id") VALUES
-(8, 1, 4),
-(10, 9, 4),
-(11, 10, 4),
-(21, 11, 4);
-
 INSERT INTO "public"."categories" ("id", "name", "min_level", "max_level") VALUES
 (1, 'Bronze', 1, 20),
 (2, 'Silver', 21, 49),
 (3, 'Gold', 50, 150);
 
-INSERT INTO "public"."group_name" ("id", "category_id", "event_id", "group_count") VALUES
-(19, 3, 4, 4),
-(20, 2, 4, 1);
-
-INSERT INTO "public"."players" ("id", "event_number", "email", "password_hash", "username", "level", "group") VALUES
-(1, 4, 'oyee.HK@gmail.com', '$2a$14$R5bWQu.Kc3QV7aGAPrF8bOg0pazD5UWeQtX5seFhcnTaD8e8I3uHu', 'hamza', 61, 19),
-(9, 4, 'oye.HK@gmail.com', '$2a$14$z5g/.8IN9.r15RJDrseBbeO2kzZnKizWyyA1DfxiFyfa7fHOeifh2', 'hamz', 42, 20),
-(10, 4, 'aaa', '$2a$14$YCK8EU8bfN9RtL2JIZKhIuNCvS8CAvJZaLkThg3sdnhYA0MyRMEoW', 'ccc', 68, 19),
-(11, 4, 'aaaa', '$2a$14$QAJ4soTwUU7n1iqapr47reazOe0zugWgIiNdToZf5RFq/ECNM5RoS', 'cccc', 58, 19);
-
-ALTER TABLE "public"."event_history" ADD FOREIGN KEY ("player_id") REFERENCES "public"."players"("id");
 ALTER TABLE "public"."event_history" ADD FOREIGN KEY ("event_id") REFERENCES "public"."events"("id");
+ALTER TABLE "public"."event_history" ADD FOREIGN KEY ("player_id") REFERENCES "public"."players"("id");
 
 
 -- Indices

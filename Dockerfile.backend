@@ -1,50 +1,29 @@
 # ---- Build stage ----
 FROM golang:1.24.2-alpine AS builder
-
-# Install git and ca-certificates
 RUN apk add --no-cache git ca-certificates bash
-
-# Set working directory
 WORKDIR /app
-
-# Copy go.mod and go.sum first to cache dependencies
 COPY go.mod go.sum ./
-
-# Set Go module environment
 ENV GOPROXY=https://proxy.golang.org,direct
 ENV GOSUMDB=sum.golang.org
-
-# Download dependencies
 RUN go mod tidy
 RUN go mod download
 
-# Copy the rest of the source code
 COPY . .
 
-# Build a Linux binary
 RUN GOOS=linux GOARCH=amd64 go build -o backend
 
 # ---- Final stage ----
 FROM alpine:latest
-
-# Install ca-certificates for HTTPS
 RUN apk add --no-cache ca-certificates
-
-# Set working directory
 WORKDIR /app
-
-# Copy the compiled binary from builder stage
 COPY --from=builder /app/backend .
 
-# Expose the port your app listens on
 EXPOSE 8080
 
-# Set environment variables (can override at runtime)
 # ENV DB_HOST=postgres
 # ENV DB_PORT=5432
 # ENV DB_USER=myuser
 # ENV DB_PASSWORD=mypassword
 # ENV DB_NAME=mydb
 
-# Run the Go binary
 CMD ["./backend"]
