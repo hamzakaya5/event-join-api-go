@@ -5,6 +5,7 @@ type LoginResponse struct {
 	Message string      `json:"message"`
 	Token   string      `json:"token"`
 	Id      int         `json:"id"`
+	Level   int         `json:"level"`
 	Data    interface{} `json:"data,omitempty"`
 }
 

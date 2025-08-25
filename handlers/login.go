@@ -39,20 +39,20 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !CheckPasswordHash(password, storedHash) {
-		fmt.Fprintln(w, "Invalid credentials")
+		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
 
 	token, err := GenerateJWT(email)
 	if err != nil {
-		fmt.Fprintln(w, "Error generating token", err)
+		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 
 	err = database.RedisClient.Set(ctx, token, email, 24*time.Hour).Err()
 
 	if err != nil {
-		fmt.Fprintln(w, "Error storing token in Redis", err)
+		http.Error(w, "Error storing token in Redis", http.StatusInternalServerError)
 		return
 	}
 
@@ -60,6 +60,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Status:  200,
 		Message: email + "logged in successfully",
 		Token:   token,
+		Level:   lvl,
 		Id:      user_id,
 	}
 
@@ -76,7 +77,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.Header.Get("username")
 
 	if email == "" || password == "" || username == "" {
-		fmt.Fprintln(w, "Missing header fields")
+		http.Error(w, "Missing header fields", http.StatusBadRequest)
 		return
 	}
 
@@ -176,7 +177,7 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("pgrow", lvl)
 	// fmt.Println(isEnrolled, "isenrolled")
 	if isEnrolled != nil {
-		fmt.Fprintln(w, "User is enrolled in any event")
+		http.Error(w, "User is enrolled in any event", http.StatusAlreadyReported)
 		return
 	}
 
@@ -199,7 +200,7 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if isExist == 0 {
-		fmt.Fprintln(w, "No such event exists")
+		http.Error(w, "No such event exists", http.StatusNotFound)
 		return
 	}
 
@@ -215,7 +216,7 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if prevEventId != 0 {
-		fmt.Fprintln(w, "Event already joined")
+		http.Error(w, "Event already joined", http.StatusConflict)
 		return
 	}
 
@@ -255,7 +256,7 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Print(groupId, "after added newgroupid")
 
 		if err != nil {
-			fmt.Fprint(w, "Error creating new group", err)
+			http.Error(w, "Error creating new group", http.StatusInternalServerError)
 			return
 		}
 
@@ -306,6 +307,6 @@ func PrivateHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Transaction committed successfully")
 	}
 
-	fmt.Fprintln(w, "This is a private route!")
+	http.Error(w, "Player Registered Successfully!", http.StatusOK)
 
 }
