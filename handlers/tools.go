@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"fmt"
+	"gamegos_case/models"
 	"math/rand"
+	"sync"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -39,4 +41,16 @@ func GenerateJWT(username string) (string, error) {
 func Rand1to70() int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(70-1+1) + 1 // => 1..70
+}
+
+func GetLock(key string) *sync.Mutex {
+	models.LocksMu.Lock()
+	defer models.LocksMu.Unlock()
+
+	if l, ok := models.Locks[key]; ok {
+		return l
+	}
+	l := &sync.Mutex{}
+	models.Locks[key] = l
+	return l
 }

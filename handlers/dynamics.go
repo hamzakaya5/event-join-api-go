@@ -3,6 +3,8 @@ package handlers
 import (
 	"context"
 	"database/sql"
+	"gamegos_case/models"
+	"strconv"
 
 	"github.com/jackc/pgx/v5"
 	// "encoding/json"
@@ -53,15 +55,26 @@ func GetEventHistoryID(tx pgx.Tx, ctx context.Context, playerID int, eventID int
 	return prevEventId, err
 }
 
-func GetCategoryForLevel(tx pgx.Tx, ctx context.Context, lvl int) (groupId int, categoryId int, err error) {
+func GetCategoryForLevel(tx pgx.Tx, ctx context.Context, lvl int, event_id int) (groupId int, categoryId int, err error) {
+	var count int
 	err = tx.QueryRow(ctx,
-		"SELECT gr.id, ctg.id FROM group_name gr JOIN categories ctg ON ctg.id = gr.category_id WHERE  ctg.min_level <=  $1 and $1 <= ctg.max_level and gr.group_count < 10",
+		"SELECT gr.id, ctg.id, gr.group_count FROM group_name gr JOIN categories ctg ON ctg.id = gr.category_id WHERE  ctg.min_level <=  $1 and $1 <= ctg.max_level and gr.group_count < 10",
 		lvl,
-	).Scan(&groupId, &categoryId)
+	).Scan(&groupId, &categoryId, &count)
 	if err != nil {
 		return 0, 0, err
 	}
-	return groupId, categoryId, nil
+
+	key := strconv.Itoa(event_id) + "|" + strconv.Itoa(groupId)
+	val := models.GroupProcessHolder[key]
+
+	if (count + val) < 10 {
+		//we are increasing group process number so other request would see how many players a group includes actually.
+		IncreaseGroupProcess(key)
+		return groupId, categoryId, nil
+	}
+
+	return 0, categoryId, nil
 }
 
 func GetCategoryForPlayerLevel(tx pgx.Tx, ctx context.Context, lvl int) (categoryId int, err error) {
@@ -113,4 +126,16 @@ func UpdatePlayerEventHistory(tx pgx.Tx, ctx context.Context, eventNo int, usr i
 			VALUES ($1, $2)`, usr, eventNo,
 	)
 	return err
+}
+
+func IncreaseGroupProcess(key string) {
+	l := GetLock(key)
+	l.Lock()
+	defer l.Unlock()
+
+	models.GroupProcessHolder[key]++
+}
+
+func DecreaseGroupProcess(key string) {
+	models.GroupProcessHolder[key]++
 }

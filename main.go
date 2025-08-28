@@ -10,7 +10,6 @@ import (
 
 func main() {
 	// PostgreSQL configuration
-
 	database.InitRedis()
 
 	for i := range 5 {
