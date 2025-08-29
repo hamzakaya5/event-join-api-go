@@ -18,14 +18,25 @@ This is a simple backend API built with Go, PostgreSQL, and Redis, running in Do
 
 ```
 .
-├──── main.go, go.mod, go.sum            # Go backend source code
-├── models/ 
-├── routes/                # Endpoint definitions
-├── handlers/              # Functions for routers, endpoint handlers
-├── nginx/                 # Nginx Dockerfile & config (load balancing/routing)
-├── database/              # Initializes redis, postgresql connections
+├── API
+│   ├── database
+│   ├── Dockerfile.backend
+│   ├── go.mod
+│   ├── go.sum
+│   ├── handlers
+│   ├── main.go
+│   ├── middleware
+│   ├── models
+│   ├── README.md
+│   └── routes
+├── DevOps
+│   ├── backend
+│   ├── database
+│   └── nginx
 ├── docker-compose.yaml
-└── README.md
+└── test_endoints
+    └── script.py
+
 ```
 
 ---
@@ -119,3 +130,14 @@ docker compose down
 * All services communicate over a private Docker network.
 * You can adjust the number of backend replicas without changing the configuration.
 * Make sure your `.env` or Docker environment variables are set correctly.
+
+
+
+## Testing
+
+* Make sure you have python installed on your computer
+* from the projects main directory run this command 
+
+``
+python3 test_endoints/script.py
+``

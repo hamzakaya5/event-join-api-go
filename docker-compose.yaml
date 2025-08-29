@@ -1,6 +1,7 @@
 services:
   backend:
     build:
+      context: ./API
       dockerfile: Dockerfile.backend
     networks:
       - backend_net
@@ -19,7 +20,7 @@ services:
 
   postgres:
     build:
-      context: .
+      context: ./DevOps/database/
       dockerfile: Dockerfile.postgres
     environment:
       POSTGRES_USER: myuser
@@ -35,7 +36,7 @@ services:
 
   nginx:
     build:
-      context: ./nginx
+      context: ./DevOps/nginx/
       dockerfile: Dockerfile.nginx
     ports:
       - "8080:8080"

@@ -10,6 +10,10 @@ import (
 )
 
 func PrivateHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
 	eventNo := r.Header.Get("eventNo")
 	userId := r.Header.Get("userId")
